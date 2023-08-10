@@ -3,6 +3,7 @@ import UserService from "../../service/user.service";
 import { type User, StoreUserPayload, UpdateUserPayload } from '../../interfaces/user.interface';
 import { RootState } from "../store";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 interface initialStateProps {
   users: User[] | null
@@ -11,6 +12,7 @@ interface initialStateProps {
   errors: string[] | null | undefined
   storePayload: StoreUserPayload | null
   updatePayload: UpdateUserPayload | null
+  isRedirectStore: boolean
 }
 
 const initialState: initialStateProps = {
@@ -20,6 +22,7 @@ const initialState: initialStateProps = {
   errors: null,
   storePayload: null,
   updatePayload: null,
+  isRedirectStore: false
 }
 
 export const getAllUsers = createAsyncThunk(
@@ -123,10 +126,10 @@ export const userSlice = createSlice({
       .addCase(getAllUsers.fulfilled, (state, action) => {
         state.isLoading = false
         state.users = action.payload.users;
+        state.isRedirectStore = false
       })
       .addCase(getAllUsers.pending, (state) => {
         state.isLoading = true
-        state.errors = null
       })
       .addCase(getUserById.fulfilled, (state, action) => {
         state.isLoading = false
@@ -139,14 +142,15 @@ export const userSlice = createSlice({
         state.isLoading = false
         state.storePayload = null
         state.errors = null
+        state.isRedirectStore = true
       })
       .addCase(storeUser.pending, (state) => {
         state.isLoading = true
       })
-    .addCase(storeUser.rejected, (state, action) => {
-        state.isLoading = false
+      .addCase(storeUser.rejected, (state, action) => {
         const errors = action.payload as string
         state.errors = errors?.split(',')
+        state.isLoading = false
       })
   }
 });

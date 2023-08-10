@@ -15,20 +15,19 @@ const CreateUser: NextPage = () => {
     last_name: ''
   });
 
-  const {storePayload, isLoading, errors} = useSelector((store: RootState) => store.userReducer);
+  const {isLoading, errors, isRedirectStore} = useSelector((store: RootState) => store.userReducer);
   const dispatch = useDispatch<AppDispatch>();
 
   const handleSubmit = () => {
     dispatch(storeUser());
-    console.log(errors)
-    if (errors == null) {
-      router.push("/");
-    }
   }
 
   useEffect(() => {
     dispatch(setStorePayload(payload));
-  }, [payload]);
+    if (errors == null && isRedirectStore) {
+      router.push("/");
+    }
+  }, [payload, isRedirectStore, errors]);
 
   return (
     <Base>
