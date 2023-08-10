@@ -16,7 +16,7 @@ export const Base: NextPage<Props> = ({children}) => {
       <main>
         <div className="bg-slate-300 shadow-sm">
           <nav className="container bg-slate-300 mx-auto py-4 text-slate-900">
-            <ul>
+            <ul className="flex justify-center">
               <li><Link href='/'>☕️ Khoerul Umam</Link></li>
             </ul>
           </nav>

@@ -57,7 +57,7 @@ export default function Home() {
     console.log(selectedUser);
   };
 
-  const handleEditButton = async (id: string): void => {
+  const handleEditButton = async (id: string) => {
     await dispatch(getUserById(id));
     router.push(`/user/edit/${id}`);
   };
