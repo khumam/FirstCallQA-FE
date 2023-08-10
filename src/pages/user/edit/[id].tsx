@@ -10,10 +10,10 @@ import { useRouter } from "next/router";
 const CreateUser: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
-  const {isLoading, errors, isRedirectUpdate} = useSelector((store: RootState) => store.userReducer);
+  const {isLoading, errors, isRedirectUpdate, selectedUser} = useSelector((store: RootState) => store.userReducer);
   const dispatch = useDispatch<AppDispatch>();
-  const [firstName, setFirstName] = useState<string>('');
-  const [lastName, setLastName] = useState<string>('');
+  const [firstName, setFirstName] = useState<string>(selectedUser?.first_name as string);
+  const [lastName, setLastName] = useState<string>(selectedUser?.last_name as string);
   
   const handleSubmit = () => {
     const payload = {

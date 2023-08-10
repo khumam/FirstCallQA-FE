@@ -3,6 +3,7 @@ import { Base } from '@/layouts/Base';
 import { AppDispatch, RootState } from '@/redux/store';
 import { deleteUser, getAllUsers, getUserById } from '@/redux/users/user.slice';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -45,6 +46,7 @@ const Modal: React.FC<ModalProps> = ({ isShow, selectedUser, setShowModal, handl
 }
 
 export default function Home() {
+  const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const { users, selectedUser } = useSelector((state: RootState) => state.userReducer);
   const dispatch = useDispatch<AppDispatch>();
@@ -53,6 +55,11 @@ export default function Home() {
     dispatch(getUserById(id));
     setShowModal(true);
     console.log(selectedUser);
+  };
+
+  const handleEditButton = async (id: string): void => {
+    await dispatch(getUserById(id));
+    router.push(`/user/edit/${id}`);
   };
 
   const handleSubmitDelete = (id: string): void => {
@@ -119,9 +126,9 @@ export default function Home() {
                       </td>
                       <td className="px-6 py-4">
                           <div className="inline-flex rounded-md shadow-sm" role="group">
-                            <Link href={"/user/edit/" + item.id} type="button" className="px-4 py-2 text-sm font-medium text-gray-900 bg-yellow-300 border border-yellow-300 rounded-l-lg hover:bg-yellow-400 hover:text-gray-900 focus:z-10 focus:ring-2">
+                            <button onClick={() => handleEditButton(item.id)} type="button" className="px-4 py-2 text-sm font-medium text-gray-900 bg-yellow-300 border border-yellow-300 rounded-l-lg hover:bg-yellow-400 hover:text-gray-900 focus:z-10 focus:ring-2">
                               Edit
-                            </Link>
+                            </button>
                             <button type="button" onClick={() => handleDeleteButton(item.id) } className="px-4 py-2 text-sm font-medium text-gray-200 bg-rose-500 border-t border-b rounded-r-lg border-rose-500 hover:bg-rose-600 hover:text-gray-200 focus:z-10 focus:ring-2">
                               Delete
                             </button>
