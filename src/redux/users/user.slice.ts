@@ -13,6 +13,7 @@ interface initialStateProps {
   storePayload: StoreUserPayload | null
   updatePayload: UpdateUserPayload | null
   isRedirectStore: boolean
+  isRedirectUpdate: boolean
 }
 
 const initialState: initialStateProps = {
@@ -22,7 +23,8 @@ const initialState: initialStateProps = {
   errors: null,
   storePayload: null,
   updatePayload: null,
-  isRedirectStore: false
+  isRedirectStore: false,
+  isRedirectUpdate: false
 }
 
 export const getAllUsers = createAsyncThunk(
@@ -127,6 +129,7 @@ export const userSlice = createSlice({
         state.isLoading = false
         state.users = action.payload.users;
         state.isRedirectStore = false
+        state.isRedirectUpdate = false
       })
       .addCase(getAllUsers.pending, (state) => {
         state.isLoading = true
@@ -144,10 +147,21 @@ export const userSlice = createSlice({
         state.errors = null
         state.isRedirectStore = true
       })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.updatePayload = null
+        state.errors = null
+        state.isRedirectUpdate = true
+      })
       .addCase(storeUser.pending, (state) => {
         state.isLoading = true
       })
       .addCase(storeUser.rejected, (state, action) => {
+        const errors = action.payload as string
+        state.errors = errors?.split(',')
+        state.isLoading = false
+      })
+      .addCase(updateUser.rejected, (state, action) => {
         const errors = action.payload as string
         state.errors = errors?.split(',')
         state.isLoading = false
