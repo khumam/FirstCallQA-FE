@@ -1,38 +1,31 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# FirstCallQA Test Assessment Frontend
 
-## Getting Started
+This is a frontend test assessment for a fullstack web developer assigned by FirstCallQA. In this code, we have defined the frontend using React, NextJS, Redux, and TailwindCSS for the CSS.
 
-First, run the development server:
+## How to run the code
+To run the code, make sure you have cloned the BE version from here: https://github.com/khumam/FirstCallQA-BE, and then run the service. Details on how to run the BE service are already provided in the readme file within the repository.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+Next, inside this repository, you can run the following command to install the required packages:
+
+```
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The final step is to run the development server using the following command:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```
+npm run dev
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+This will make the frontend listen on port 3000. Open your browser and go to http://localhost:3000 to see the result.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+IMPORTANT: I have set the default port for the backend as 3080, so ensure that when you run the backend service, it's also using port 3080.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Project structure
+- All project files are stored in the `src` folder.
+- The `interfaces` folder is for defining the interface type for each variable.
+- The `layouts` folder is for defining the base layout for the pages.
+- The `pages` folder is for defining page-based routes using Next.js.
+- The `redux` folder is for defining the Redux configuration.
+- The `service` folder is for defining the API connection configuration.
+- The `styles` folder is for defining the `global.css` file, styled using TailwindCSS.
