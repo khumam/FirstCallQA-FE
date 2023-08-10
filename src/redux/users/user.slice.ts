@@ -1,18 +1,25 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import UserService from "../../service/user.service";
 import { type User, StoreUserPayload, UpdateUserPayload } from '../../interfaces/user.interface';
+import { RootState } from "../store";
+import axios from "axios";
 
 interface initialStateProps {
   users: User[] | null
-  selectedUser: User | null,
+  selectedUser: User | null
   isLoading: boolean
-
+  errors: string[] | null | undefined
+  storePayload: StoreUserPayload | null
+  updatePayload: UpdateUserPayload | null
 }
 
 const initialState: initialStateProps = {
   users: null,
   selectedUser: null,
   isLoading: false,
+  errors: null,
+  storePayload: null,
+  updatePayload: null,
 }
 
 export const getAllUsers = createAsyncThunk(
@@ -22,7 +29,10 @@ export const getAllUsers = createAsyncThunk(
       const response = await UserService.getAllUsers();
       return { users: response.data.data }
     } catch (error) {
-      const message = 'error';
+      let message = error;
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data.message.join()
+      }
       return thunkAPI.rejectWithValue(message);
     }
   }
@@ -35,7 +45,10 @@ export const getUserById = createAsyncThunk(
       const response = await UserService.getUserById(payload);
       return { user: response.data.data }
     } catch (error) {
-      const message = 'error';
+      let message = error;
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data.message.join()
+      }
       return thunkAPI.rejectWithValue(message);
     }
   }
@@ -43,38 +56,49 @@ export const getUserById = createAsyncThunk(
 
 export const storeUser = createAsyncThunk(
   'users/storeUser',
-  async (payload: StoreUserPayload, thunkAPI) => {
+  async (_payload, thunkAPI) => {
     try {
-      const response = await UserService.storeUser(payload);
+      const payload = (thunkAPI.getState() as RootState).userReducer.storePayload;
+      const response = await UserService.storeUser(payload as StoreUserPayload);
       return { user: response.data.data }
     } catch (error) {
-      const message = 'error';
+      let message = error;
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data.message.join()
+      }
       return thunkAPI.rejectWithValue(message);
     }
   }
 );
 
 export const updateUser = createAsyncThunk(
-  'users/storeUser',
-  async (payload: UpdateUserPayload, thunkAPI) => {
+  'users/updateUser',
+  async (_payload, thunkAPI) => {
     try {
-      const response = await UserService.updateUser(payload);
+      const payload = (thunkAPI.getState() as RootState).userReducer.updatePayload;
+      const response = await UserService.updateUser(payload as UpdateUserPayload);
       return { user: response.data.data }
     } catch (error) {
-      const message = 'error';
+      let message = error;
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data.message.join()
+      }
       return thunkAPI.rejectWithValue(message);
     }
   }
 );
 
 export const deleteUser = createAsyncThunk(
-  'users/storeUser',
+  'users/deleteUser',
   async (payload: string, thunkAPI) => {
     try {
       const response = await UserService.deleteUser(payload);
       return { user: response.data.data }
     } catch (error) {
-      const message = 'error';
+      let message = error;
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data.message.join()
+      }
       return thunkAPI.rejectWithValue(message);
     }
   }
@@ -87,6 +111,12 @@ export const userSlice = createSlice({
     setSelectedUser: (state, action) => {
       state.selectedUser = action.payload.user;
     },
+    setStorePayload: (state, action) => {
+      state.storePayload = action.payload;
+    },
+    setUpdatePayload: (state, action) => {
+      state.updatePayload = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -96,6 +126,7 @@ export const userSlice = createSlice({
       })
       .addCase(getAllUsers.pending, (state) => {
         state.isLoading = true
+        state.errors = null
       })
       .addCase(getUserById.fulfilled, (state, action) => {
         state.isLoading = false
@@ -106,13 +137,20 @@ export const userSlice = createSlice({
       })
       .addCase(storeUser.fulfilled, (state, action) => {
         state.isLoading = false
+        state.storePayload = null
+        state.errors = null
       })
       .addCase(storeUser.pending, (state) => {
         state.isLoading = true
       })
+    .addCase(storeUser.rejected, (state, action) => {
+        state.isLoading = false
+        const errors = action.payload as string
+        state.errors = errors?.split(',')
+      })
   }
 });
 
-export const { setSelectedUser } = userSlice.actions;
+export const { setSelectedUser, setStorePayload, setUpdatePayload } = userSlice.actions;
 const reducer = userSlice.reducer;
 export default reducer;
